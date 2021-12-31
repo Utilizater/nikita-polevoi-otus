@@ -30,7 +30,6 @@ const fileHandler = (obj, parentItem) => {
           newXRow.push('   ');
         } else {
           newXRow.push('└──');
-          // newXRow.push('-');
           newXRow.push(obj.name);
         }
       }
@@ -38,7 +37,7 @@ const fileHandler = (obj, parentItem) => {
       arr = [...arr.slice(0, positionY), newXRow, ...arr.slice(positionY)];
 
       if (obj.items) {
-        obj.items.forEach((element) => {
+        obj.items.reverse().forEach((element) => {
           fileHandler(element, obj.name);
         });
       } else {
@@ -49,7 +48,7 @@ const fileHandler = (obj, parentItem) => {
     //first entry
     arr.push([obj.name]);
     if (obj.items) {
-      obj.items.forEach((element) => {
+      obj.items.reverse().forEach((element) => {
         fileHandler(element, obj.name);
       });
     } else {
@@ -64,9 +63,7 @@ fileHandler(jsonFile);
 for (let y = 0; y < arr.length; y++) {
   for (let x = 0; x < arr[y].length; x++) {
     if (arr[y][x] === '└──') {
-      //here is mistake
       for (let i = y + 1; i < arr.length; i++) {
-        //try to go revert
         if (arr[i][x] === '   ') {
           arr[i][x] = '│  ';
         } else {
