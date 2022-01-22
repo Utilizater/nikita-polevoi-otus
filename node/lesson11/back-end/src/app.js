@@ -5,6 +5,8 @@ import Course from './models/courses.js';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import { createUser, authorization } from './dbFunctions/usersFunctions.js';
+import { createNewCourse } from './dbFunctions/courseFunctions.js';
+import { getUserIdFromRequest } from './utils/getUserId.js';
 
 mongoose.connect(
   `mongodb+srv://admin:${process.env.MONGO_DB_PASSWORD}@cluster0.hvxrm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
@@ -24,7 +26,7 @@ app.use(express.json());
 app.use(cors());
 
 const authenticatedToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
+  const authHeader = req?.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) res.sendStatus(401);
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
@@ -36,6 +38,13 @@ const authenticatedToken = (req, res, next) => {
 
 app.get('/courses-list', authenticatedToken, (req, res) => {
   res.json({ coursesList: [{ a: 1 }, { b: 2 }] });
+});
+
+app.post('/create-new-course', authenticatedToken, async (req, res) => {
+  const { inputObject } = req.body;
+  const userId = getUserIdFromRequest(req);
+  await createNewCourse(inputObject, userId);
+  res.send(true);
 });
 
 app.post('/login', async (req, res) => {
