@@ -1,8 +1,10 @@
 const fs = require('fs');
 const pkg = require('lodash');
 
-const file = fs.readFileSync('jsonThree.json');
-const jsonFile = JSON.parse(file);
+const getObjFromJson = (path) => {
+  const file = fs.readFileSync(path);
+  return JSON.parse(file);
+};
 
 const fileHandler = (jsonFile) => {
   let arr = [];
@@ -80,6 +82,7 @@ const verticalsConnection = (inputArr) => {
   return arr;
 };
 
+const jsonFile = getObjFromJson('jsonThree.json');
 let arr = fileHandler(jsonFile);
 arr = verticalsConnection(arr);
 
@@ -95,4 +98,5 @@ module.exports = {
   verticalsConnection,
   fileHandler,
   jsonFile,
+  getObjFromJson,
 };
