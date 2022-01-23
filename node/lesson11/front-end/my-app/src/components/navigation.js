@@ -33,7 +33,7 @@ export default () => {
       {isAuthorized && (
         <Button
           onClick={() => {
-            window.location = '/';
+            window.location = '/courses-list';
           }}
         >
           List of courses
