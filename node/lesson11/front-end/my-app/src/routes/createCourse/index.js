@@ -46,14 +46,13 @@ export default () => {
     };
     try {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-      console.log(axios.defaults.headers);
       await axios.post('http://localhost:4000/create-new-course', {
         inputObject,
       });
       setCourseName('');
       setCourseDescription('');
       setLessons([]);
-      window.location = '/';
+      window.location = '/courses-list';
     } catch (e) {
       alert(e);
     }

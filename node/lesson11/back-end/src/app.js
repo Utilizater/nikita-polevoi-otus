@@ -5,7 +5,11 @@ import Course from './models/courses.js';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import { createUser, authorization } from './dbFunctions/usersFunctions.js';
-import { createNewCourse } from './dbFunctions/courseFunctions.js';
+import {
+  createNewCourse,
+  getCoursesList,
+  getCourseById,
+} from './dbFunctions/courseFunctions.js';
 import { getUserIdFromRequest } from './utils/getUserId.js';
 
 mongoose.connect(
@@ -36,8 +40,9 @@ const authenticatedToken = (req, res, next) => {
   });
 };
 
-app.get('/courses-list', authenticatedToken, (req, res) => {
-  res.json({ coursesList: [{ a: 1 }, { b: 2 }] });
+app.get('/courses-list', authenticatedToken, async (req, res) => {
+  const coursesList = await getCoursesList();
+  res.json({ coursesList });
 });
 
 app.post('/create-new-course', authenticatedToken, async (req, res) => {
@@ -45,6 +50,12 @@ app.post('/create-new-course', authenticatedToken, async (req, res) => {
   const userId = getUserIdFromRequest(req);
   await createNewCourse(inputObject, userId);
   res.send(true);
+});
+
+app.get('/get-course', authenticatedToken, async (req, res) => {
+  const { courseId } = req.query;
+  const course = await getCourseById(courseId);
+  res.json({ course });
 });
 
 app.post('/login', async (req, res) => {
@@ -61,7 +72,6 @@ app.post('/login', async (req, res) => {
 
 app.post('/createAccount', async (req, res) => {
   const { login, password } = req.body;
-  console.log(login, password);
   try {
     const user = await createUser(login, password);
     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);

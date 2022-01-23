@@ -26,3 +26,28 @@ export const createNewCourse = async (obj, userId) => {
     await lesson.save();
   });
 };
+
+export const getCoursesList = async () => {
+  // const coursesList = await Course.find({});
+  const coursesList = await Course.aggregate([
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'author',
+        foreignField: '_id',
+        as: 'author',
+      },
+    },
+    {
+      $unwind: {
+        path: '$author',
+      },
+    },
+  ]);
+  return coursesList;
+};
+
+export const getCourseById = async (courseId) => {
+  // const course = await Course.findOne({ _id: courseId });
+  return await Course.findOne({ _id: courseId });
+};
