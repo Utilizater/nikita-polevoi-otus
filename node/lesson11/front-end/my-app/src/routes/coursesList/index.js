@@ -19,12 +19,10 @@ export default () => {
       alert(error);
     }
   }, [token]);
-
   return (
     <div
       style={{
         height: '100%',
-        // border: '1px solid red',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -44,8 +42,8 @@ export default () => {
             display: 'flex',
             marginTop: '20px',
             alignItems: 'center',
-            // justifyContent: 'center',
             flexDirection: 'column',
+            // overflow: 'auto',
           }}
         >
           {coursesList.map((course) => (

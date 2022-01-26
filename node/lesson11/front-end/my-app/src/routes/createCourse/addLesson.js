@@ -5,10 +5,11 @@ import Button from '@mui/material/Button';
 export default ({ setLessons }) => {
   const [titleText, setTitleText] = useState('');
   const [descriptionText, setDescriptionText] = useState('');
+  const [file, setFile] = useState();
   const submit = () => {
     setLessons((state) => [
       ...state,
-      { title: titleText, description: descriptionText },
+      { title: titleText, description: descriptionText, file },
     ]);
     setTitleText('');
     setDescriptionText('');
@@ -50,7 +51,13 @@ export default ({ setLessons }) => {
         />
         <Button component='label'>
           Upload Video
-          <input type='file' hidden />
+          <input
+            type='file'
+            hidden
+            onChange={(e) => {
+              setFile(e.target.files[0]);
+            }}
+          />
         </Button>
         <div
           style={{

@@ -1,7 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import Course from './models/courses.js';
+import fileupload from 'express-fileupload';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import { createUser, authorization } from './dbFunctions/usersFunctions.js';
@@ -10,6 +10,7 @@ import {
   getCoursesList,
   getCourseById,
 } from './dbFunctions/courseFunctions.js';
+import { getLessonById } from './dbFunctions/lessonFunctions.js';
 import { getUserIdFromRequest } from './utils/getUserId.js';
 
 mongoose.connect(
@@ -19,15 +20,16 @@ mongoose.connect(
   }
 );
 
-const course = new Course({
-  _id: mongoose.Types.ObjectId(),
-  name: 'firstProject',
-});
+// const course = new Course({
+//   _id: mongoose.Types.ObjectId(),
+//   name: 'firstProject',
+// });
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(fileupload());
 
 const authenticatedToken = (req, res, next) => {
   const authHeader = req?.headers['authorization'];
@@ -52,9 +54,22 @@ app.post('/create-new-course', authenticatedToken, async (req, res) => {
   res.send(true);
 });
 
+app.post('/file-upload', authenticatedToken, async (req, res) => {
+  console.log(req.files);
+  console.log(req.body);
+  // console.log(req.files);
+
+  res.send(true);
+});
+
 app.get('/get-course', authenticatedToken, async (req, res) => {
-  const { courseId } = req.query;
+  const { courseId, lessonId } = req.query;
   const course = await getCourseById(courseId);
+  if (lessonId !== 'null' && lessonId !== undefined) {
+    const lesson = await getLessonById(lessonId);
+    res.json({ course, lesson });
+    return;
+  }
   res.json({ course });
 });
 
