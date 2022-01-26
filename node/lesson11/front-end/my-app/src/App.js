@@ -7,7 +7,6 @@ import CreateCourse from './routes/createCourse';
 import Layout from './components/layouts/mainLayout';
 import { AuthProvider } from './components/contexts/authContext';
 import Course from './routes/course';
-import Lesson from './routes/course/lesson.js';
 
 const App = () => {
   return (

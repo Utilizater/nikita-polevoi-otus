@@ -40,19 +40,42 @@ export default () => {
         return {
           name: lesson.title,
           description: lesson.description,
-          video: 'TO DO',
+          // lessonNumber:
+          // video: lesson?.file,
         };
       }),
     };
+    // console.log(inputObject.lessons);
     try {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-      await axios.post('http://localhost:4000/create-new-course', {
-        inputObject,
+      const course = await axios.post(
+        'http://localhost:4000/create-new-course',
+        {
+          inputObject,
+        }
+      );
+      //TO DO I need to store lessons one by one
+      lessons.forEach(async (lesson) => {
+        if (lesson?.file) {
+          console.log('file ', lesson.file);
+          let formData = new FormData();
+          formData.append('file', lesson.file);
+          formData.append('lessonId', 222);
+          formData.append('courseId', 333);
+          console.log('>> formData >> ', formData);
+          await axios.post('http://localhost:4000/file-upload', formData, {
+            body: { test: 'asd' },
+            headers: {
+              'Content-Type': 'video/mp4',
+            },
+          });
+        }
       });
+
       setCourseName('');
       setCourseDescription('');
       setLessons([]);
-      window.location = '/courses-list';
+      // window.location = '/courses-list';
     } catch (e) {
       alert(e);
     }
